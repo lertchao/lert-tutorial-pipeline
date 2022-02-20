@@ -47,8 +47,8 @@ jobs:
               "name": "MONGODB_CONNECTION_STRING",
               "value": "mongodb://cosmos-lert-tutorial-dev-001:MaTcnSUN98bqaStyxGUycMlHYlTNBt9N57yQfiELkzI4ia4Tum3WYQlmOalyzYZFZXLO7WeNv4OFRGNUsbHHVQ==@cosmos-lert-tutorial-dev-001.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@cosmos-lert-tutorial-dev-001@",
               "slotSetting": false
-            }
-                        {
+            },
+            {
               "name": "PORT",
               "value": "80",
               "slotSetting": false
