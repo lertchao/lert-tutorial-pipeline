@@ -1,0 +1,56 @@
+name: DEV - Tutorial backend Deploy
+
+on:
+  repository_dispatch:
+    types: [lert-tutorial-backend-cd-dev]
+  workflow_dispatch:
+
+env:
+  REPOSITORY: "lertchao/lert-tutorial-backend"
+  APP_NAME: lert-tutorial-backend
+  AZURE_WEB_APP_NAME: app-lert-tutorial-backend-dev-001
+  CONTAINER_REPOSITORY: "acrlerttutorial001.azurecr.io"
+  IMAGE_TAG: "0.0.1-SNAPSHOT"
+
+jobs:
+  build-and-deploy-app-service:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+    - name: "Checkout pipelines"
+      uses: actions/checkout@v2
+
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_RBAC_CREDENTIALS }}
+        allow-no-subscriptions: true
+    
+    - name: 'Set subscription'
+      run: az account set --subscription e3af2b92-c05a-4b64-97be-ba1f2f7924af
+
+
+    - name: "Deploy to Azure WebApp"
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEB_APP_NAME }}
+        images: '${{ env.CONTAINER_REPOSITORY }}/${{ env.APP_NAME }}:${{env.IMAGE_TAG}}'
+
+    - name: Set Web App Settings
+      uses: Azure/appservice-settings@v1
+      with:
+        app-name: ${{ env.AZURE_WEB_APP_NAME }}
+        app-settings-json: |
+          [
+            {
+              "name": "MONGODB_CONNECTION_STRING",
+              "value": "mongodb://cosmos-lert-tutorial-dev-001:MaTcnSUN98bqaStyxGUycMlHYlTNBt9N57yQfiELkzI4ia4Tum3WYQlmOalyzYZFZXLO7WeNv4OFRGNUsbHHVQ==@cosmos-lert-tutorial-dev-001.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@cosmos-lert-tutorial-dev-001@",
+              "slotSetting": false
+            }
+                        {
+              "name": "PORT",
+              "value": "80",
+              "slotSetting": false
+            }
+          ]
